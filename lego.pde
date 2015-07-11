@@ -1,7 +1,7 @@
 final int WINDOW_SIZE[] = {800, 600};
 final color BG_COLOR = color(128, 128, 192);
 
-final int ORIGIN[] = {20, 20};
+final int ORIGIN[] = {20, 500};
 
 final int B_GROUND = 0;
 final int B_VALID = 1;
@@ -16,7 +16,8 @@ int getMi() {
 }
 
 int getMj() {
-  return mouseY >= ORIGIN[1] ? (mouseY - ORIGIN[1]) / BLOCK_SIZE[1] : -1;
+  return mouseY <= ORIGIN[1] + BLOCK_SIZE[1] ?
+    (ORIGIN[1] + BLOCK_SIZE[1] - mouseY) / BLOCK_SIZE[1] : -1;
 }
 
 int getX(int i) {
@@ -24,7 +25,7 @@ int getX(int i) {
 }
 
 int getY(int j) {
-  return ORIGIN[1] + BLOCK_SIZE[1] * j;
+  return ORIGIN[1] - BLOCK_SIZE[1] * j;
 }
 
 void setup() {
@@ -53,12 +54,12 @@ void draw() {
     }
   }
   // ground
-  drawBlock(0, BLOCK_NUM[1], BLOCK_NUM[0], B_GROUND);
+  drawBlock(0, -1, BLOCK_NUM[0], B_GROUND);
   // blocks
+  drawBlock(4, 4, 2, B_VALID);
   drawBlock(0, 5, 4, B_VALID);
   drawBlock(4, 5, 4, B_INVALID);
   drawBlock(8, 5, 4, B_INVALID);
-  drawBlock(4, 4, 2, B_VALID);
 
   int mi = getMi();
   int mj = getMj();
