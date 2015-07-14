@@ -1,7 +1,7 @@
 import java.util.*;
 
 final int WINDOW_SIZE[] = {1000, 600};
-final color BG_COLOR = color(128, 128, 192);
+final color BG_COLOR = color(255, 255, 224);
 
 final int ORIGIN[] = {20, 500};
 
@@ -20,6 +20,9 @@ final color BLOCK_COLOR[] = {color(255, 96, 0, 255),
                              color(255, 128, 128, 160)};
 
 ArrayList<LinkedList<Block>> blk;
+
+final int BLOCK_SET[] = {0, 0, 6, 6, 4, 0, 4};
+int blockCount[];
 
 int mi;
 int mj;
@@ -65,6 +68,7 @@ void setup() {
   for(int i=0; i<BLOCK_NUM[1]; i++) {
     blk.add(new LinkedList<Block>());
   }
+  blockCount = new int[BLOCK_SET.length];
 }
 
 void drawBlock(int i, int j, int w, int state) {
@@ -101,9 +105,22 @@ void draw() {
   // ground
   drawBlock(0, -1, BLOCK_NUM[0], B_GROUND);
   // blocks
+  for(int i=0; i < blockCount.length; i++) {
+    blockCount[i] = 0;
+  }
   for(int j=0; j<BLOCK_NUM[1]; j++) {
     for(Iterator<Block> p=blk.get(j).iterator(); p.hasNext(); ) {
       Block b = p.next();
+      if(b.w < blockCount.length) {
+        blockCount[b.w]++;
+      }
+    }
+  }
+  for(int j=0; j<BLOCK_NUM[1]; j++) {
+    for(Iterator<Block> p=blk.get(j).iterator(); p.hasNext(); ) {
+      Block b = p.next();
+      b.state = (b.w < blockCount.length && blockCount[b.w] <= BLOCK_SET[b.w]) ?
+        B_VALID : B_INVALID;
       b.draw();
     }
   }
@@ -115,10 +132,21 @@ void draw() {
     if(mousePressed) {
       int i = mi < mi0 ? mi : mi0;
       int w = mi < mi0 ? mi0 - mi + 1 : mi - mi0 + 1;
-      int s = (w==2 || w==3 || w==4 || w==6) ? B_VALID_S : B_INVALID_S;
+      int s = (w < blockCount.length && blockCount[w] < BLOCK_SET[w]) ?
+        B_VALID_S : B_INVALID_S;
       if(w != 1) {
         drawBlock(i, mj0, w, s);
       }
+      stroke(64, 64, 64);
+      strokeWeight(3);
+      int x1 = getX(0);
+      int x2 = getX(BLOCK_NUM[0]);
+      int y = getY(mj0) + BLOCK_SIZE[1] / 2;
+      line(x1 + 10, y, x2 - 8, y);
+      noStroke();
+      fill(64, 64, 64);
+      triangle(x1, y + 1, x1 + 20, y - 5, x1 + 20, y + 7);
+      triangle(x2, y + 1, x2 - 20, y - 5, x2 - 20, y + 7);
     } else {
       stroke(0);
       strokeWeight(3);
@@ -155,9 +183,9 @@ void mouseReleased() {
       p.remove();
     }
   }
-  int s = (w==2 || w==3 || w==4 || w==6) ? B_VALID : B_INVALID;
+  // int s = (w < blockCount.length && blockCount[w] > 0) ? B_VALID : B_INVALID;
   if(w != 1) {
-    blk.get(mj0).add(new Block(i, mj0, w, s));
+    blk.get(mj0).add(new Block(i, mj0, w, B_VALID));
   }
   cursor(ARROW);
 }
