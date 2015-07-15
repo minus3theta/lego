@@ -22,6 +22,7 @@ final color BLOCK_COLOR[] = {color(255, 96, 0, 255),
 ArrayList<LinkedList<Block>> blk;
 
 final int BLOCK_SET[] = {0, 0, 6, 6, 4, 0, 4};
+final int BLOCK_SET_POS[] = {0, 0, 11, 8, 5, 0, 2};
 int blockCount[];
 
 int mi;
@@ -127,20 +128,15 @@ void draw() {
 
   textSize(24);
   textAlign(RIGHT);
-  int j = 11;
   for(int i=0; i<blockCount.length; i++) {
     if(BLOCK_SET[i] > 0) {
       boolean valid = blockCount[i] <= BLOCK_SET[i];
-      drawBlock(BLOCK_NUM[0] + 1, j, i, valid ? B_VALID : B_INVALID);
+      drawBlock(BLOCK_NUM[0] + 1, BLOCK_SET_POS[i], i, valid ? B_VALID : B_INVALID);
       fill(valid ? color(0, 0, 0) : color(255, 0, 0));
       text(blockCount[i] + " / " + BLOCK_SET[i],
-           getX(BLOCK_NUM[0] + 6), getY(j-1) + 30);
-      j -= 3;
+           getX(BLOCK_NUM[0] + 6), getY(BLOCK_SET_POS[i]-1) + 35);
     }
   }
-  // drawBlock(BLOCK_NUM[0] + 1,  8, 3, B_VALID);
-  // drawBlock(BLOCK_NUM[0] + 1,  5, 4, B_VALID);
-  // drawBlock(BLOCK_NUM[0] + 1,  2, 6, B_VALID);
 
   mi = getMi();
   mj = getMj();
@@ -151,9 +147,17 @@ void draw() {
       int w = mi < mi0 ? mi0 - mi + 1 : mi - mi0 + 1;
       int s = (w < blockCount.length && blockCount[w] < BLOCK_SET[w]) ?
         B_VALID_S : B_INVALID_S;
+      if(w < BLOCK_SET.length && BLOCK_SET[w] > 0) {
+        stroke(64, 64, 64);
+        strokeWeight(3);
+        noFill();
+        rect(getX(BLOCK_NUM[0] + 1) - 10, getY(BLOCK_SET_POS[w]) - 15,
+             BLOCK_SIZE[0] * w + 20, BLOCK_SIZE[1] + 25);
+      }
       if(w != 1) {
         drawBlock(i, mj0, w, s);
       }
+      // draw arrow
       stroke(64, 64, 64);
       strokeWeight(3);
       int x1 = getX(0);
@@ -200,7 +204,6 @@ void mouseReleased() {
       p.remove();
     }
   }
-  // int s = (w < blockCount.length && blockCount[w] > 0) ? B_VALID : B_INVALID;
   if(w != 1) {
     blk.get(mj0).add(new Block(i, mj0, w, B_VALID));
   }
