@@ -125,6 +125,23 @@ void draw() {
     }
   }
 
+  textSize(24);
+  textAlign(RIGHT);
+  int j = 11;
+  for(int i=0; i<blockCount.length; i++) {
+    if(BLOCK_SET[i] > 0) {
+      boolean valid = blockCount[i] <= BLOCK_SET[i];
+      drawBlock(BLOCK_NUM[0] + 1, j, i, valid ? B_VALID : B_INVALID);
+      fill(valid ? color(0, 0, 0) : color(255, 0, 0));
+      text(blockCount[i] + " / " + BLOCK_SET[i],
+           getX(BLOCK_NUM[0] + 6), getY(j-1) + 30);
+      j -= 3;
+    }
+  }
+  // drawBlock(BLOCK_NUM[0] + 1,  8, 3, B_VALID);
+  // drawBlock(BLOCK_NUM[0] + 1,  5, 4, B_VALID);
+  // drawBlock(BLOCK_NUM[0] + 1,  2, 6, B_VALID);
+
   mi = getMi();
   mj = getMj();
   if(mi >= 0 && mi < BLOCK_NUM[0] &&
