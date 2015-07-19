@@ -1,9 +1,9 @@
 import java.util.*;
 
-final int WINDOW_SIZE[] = {1000, 600};
+final int WINDOW_SIZE[] = {1000, 605};
 final color BG_COLOR = color(255, 255, 224);
 
-final int ORIGIN[] = {20, 500};
+final int ORIGIN[] = {20, 515};
 
 final int B_GROUND = 0;
 final int B_VALID = 1;
@@ -13,9 +13,9 @@ final int B_VALID_S = 4;
 final int B_INVALID_S = 5;
 final int B_UNGROUND_S = 6;
 
-final int BLOCK_SIZE[] = {25, 40};
-final int BLOCK_NUM[] = {30, 13};
-final color BLOCK_COLOR[] = {color(255, 96, 0, 255),
+final int BLOCK_SIZE[] = {27, 35};
+final int BLOCK_NUM[] = {28, 15};
+final color BLOCK_COLOR[] = {color(192, 128, 64, 255),
                              color(128, 128, 255, 255),
                              color(255, 128, 128, 255),
                              color(128, 128, 160, 255),
@@ -100,7 +100,7 @@ void drawBlock(int i, int j, int w, int state) {
   stroke(0);
   strokeWeight(1);
   for(int k=0; k<w; k++) {
-    rect(getX(i+k) + 6, getY(j) - 5, 11, 5);
+    rect(getX(i+k) + 6, getY(j) - 5, 13, 5);
   }
   rect(getX(i), getY(j), BLOCK_SIZE[0] * w - 1, BLOCK_SIZE[1] - 1);
 }
