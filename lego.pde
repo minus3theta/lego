@@ -8,16 +8,20 @@ final int ORIGIN[] = {20, 500};
 final int B_GROUND = 0;
 final int B_VALID = 1;
 final int B_INVALID = 2;
-final int B_VALID_S = 3;
-final int B_INVALID_S = 4;
+final int B_UNGROUND = 3;
+final int B_VALID_S = 4;
+final int B_INVALID_S = 5;
+final int B_UNGROUND_S = 6;
 
 final int BLOCK_SIZE[] = {25, 40};
 final int BLOCK_NUM[] = {30, 13};
 final color BLOCK_COLOR[] = {color(255, 96, 0, 255),
                              color(128, 128, 255, 255),
                              color(255, 128, 128, 255),
+                             color(128, 128, 160, 255),
                              color(128, 128, 255, 160),
-                             color(255, 128, 128, 160)};
+                             color(255, 128, 128, 160),
+                             color(128, 128, 160, 160)};
 
 ArrayList<LinkedList<Block>> blk;
 
@@ -49,8 +53,9 @@ class Block {
       return;
     }
     visited = true;
-    state = w < blockCount.length && blockCount[w] <= BLOCK_SET[w] ?
-      B_VALID : B_INVALID;
+    if(state == B_UNGROUND) {
+      state = B_VALID;
+    }
     for(int k = j-1; k <= j+1; k += 2) {
       if(k < 0 || k >= BLOCK_NUM[1]) {
         continue;
@@ -132,11 +137,17 @@ void draw() {
   for(int j=0; j<BLOCK_NUM[1]; j++) {
     for(Iterator<Block> p=blk.get(j).iterator(); p.hasNext(); ) {
       Block b = p.next();
-      b.state = B_INVALID;
-      b.visited = false;
       if(b.w < blockCount.length) {
         blockCount[b.w]++;
       }
+    }
+  }
+  for(int j=0; j<BLOCK_NUM[1]; j++) {
+    for(Iterator<Block> p=blk.get(j).iterator(); p.hasNext(); ) {
+      Block b = p.next();
+      b.state = b.w < blockCount.length && blockCount[b.w] <= BLOCK_SET[b.w] ?
+        B_UNGROUND : B_INVALID;
+      b.visited = false;
     }
   }
   for(Iterator<Block> p=blk.get(0).iterator(); p.hasNext(); ) {
@@ -150,6 +161,7 @@ void draw() {
     }
   }
 
+  // side pane
   textSize(24);
   textAlign(RIGHT);
   for(int i=0; i<blockCount.length; i++) {
@@ -169,8 +181,6 @@ void draw() {
     if(mousePressed) {
       int i = mi < mi0 ? mi : mi0;
       int w = mi < mi0 ? mi0 - mi + 1 : mi - mi0 + 1;
-      int s = (w < blockCount.length && blockCount[w] < BLOCK_SET[w]) ?
-        B_VALID_S : B_INVALID_S;
       if(w < BLOCK_SET.length && BLOCK_SET[w] > 0) {
         stroke(64, 64, 64);
         strokeWeight(3);
@@ -179,6 +189,26 @@ void draw() {
              BLOCK_SIZE[0] * w + 20, BLOCK_SIZE[1] + 25);
       }
       if(w != 1) {
+        int s = mj0 == 0 ? B_VALID_S : B_UNGROUND_S;
+        if(w < blockCount.length && blockCount[w] < BLOCK_SET[w]) {
+          for(int k = mj0-1; k <= mj0+1; k += 2) {
+            if(s == B_VALID_S) {
+              break;
+            }
+            if(k < 0 || k >= BLOCK_NUM[1]) {
+              continue;
+            }
+            for(Iterator<Block> p=blk.get(k).iterator(); p.hasNext(); ) {
+              Block b = p.next();
+              if(i + w > b.i && i < b.i + b.w) {
+                s = B_VALID_S;
+                break;
+              }
+            }
+          }
+        } else {
+          s = B_INVALID_S;
+        }
         drawBlock(i, mj0, w, s);
       }
       // draw arrow
