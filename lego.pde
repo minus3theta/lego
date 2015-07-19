@@ -26,7 +26,7 @@ final color BLOCK_COLOR[] = {color(192, 128, 64, 255),
 ArrayList<LinkedList<Block>> blk;
 
 final int BLOCK_SET[] = {0, 0, 6, 6, 4, 0, 4};
-final int BLOCK_SET_POS[] = {0, 0, 11, 8, 5, 0, 2};
+final int BLOCK_SET_POS[] = {0, 0, 13, 10, 7, 0, 4};
 int blockCount[];
 
 int mi;
@@ -142,13 +142,6 @@ void draw() {
       }
     }
   }
-  // for(int j=0; j<BLOCK_NUM[1]; j++) {
-  //   for(Iterator<Block> p=blk.get(j).iterator(); p.hasNext(); ) {
-  //     Block b = p.next();
-  //     b.state = b.w < blockCount.length && blockCount[b.w] <= BLOCK_SET[b.w] ?
-  //       B_UNGROUND : B_INVALID;
-  //   }
-  // }
   for(Iterator<Block> p=blk.get(0).iterator(); p.hasNext(); ) {
     Block b = p.next();
     b.dfs();
@@ -167,9 +160,20 @@ void draw() {
   textAlign(RIGHT);
   for(int i=0; i<blockCount.length; i++) {
     if(BLOCK_SET[i] > 0) {
-      boolean valid = blockCount[i] <= BLOCK_SET[i];
-      drawBlock(BLOCK_NUM[0] + 1, BLOCK_SET_POS[i], i, valid ? B_VALID : B_INVALID);
-      fill(valid ? color(0, 0, 0) : color(255, 0, 0));
+      int bs;
+      color tc;
+      if(blockCount[i] < BLOCK_SET[i]) {
+        bs = B_VALID;
+        tc = color(0, 0, 0);
+      } else if(blockCount[i] == BLOCK_SET[i]) {
+        bs = B_UNGROUND;
+        tc = color(64, 64, 64);
+      } else {
+        bs = B_INVALID;
+        tc = color(255, 0, 0);
+      }
+      drawBlock(BLOCK_NUM[0] + 1, BLOCK_SET_POS[i], i, bs);
+      fill(tc);
       text(blockCount[i] + " / " + BLOCK_SET[i],
            getX(BLOCK_NUM[0] + 6), getY(BLOCK_SET_POS[i]-1) + 35);
     }
@@ -243,6 +247,10 @@ void mousePressed() {
     if(p != null) {
       p.remove();
     }
+  // } else {
+  //   for(int i=0; i<BLOCK_NUM[1]; i++) {
+  //     blk.get(i).clear();
+  //   }
   }
 }
 
