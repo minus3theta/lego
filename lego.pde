@@ -34,6 +34,7 @@ class Block {
   public int i, j;
   public int w;
   public int state;
+  public boolean visited;
   public Block(int i, int j, int w, int state) {
     this.i = i;
     this.j = j;
@@ -42,6 +43,25 @@ class Block {
   }
   public void draw() {
     drawBlock(i, j, w, state);
+  }
+  public void dfs() {
+    if(visited) {
+      return;
+    }
+    visited = true;
+    state = w < blockCount.length && blockCount[w] <= BLOCK_SET[w] ?
+      B_VALID : B_INVALID;
+    for(int k = j-1; k <= j+1; k += 2) {
+      if(k < 0 || k >= BLOCK_NUM[1]) {
+        continue;
+      }
+      for(Iterator<Block> p=blk.get(k).iterator(); p.hasNext(); ) {
+        Block b = p.next();
+        if(i + w > b.i && i < b.i + b.w) {
+          b.dfs();
+        }
+      }
+    }
   }
 }
 
@@ -112,16 +132,20 @@ void draw() {
   for(int j=0; j<BLOCK_NUM[1]; j++) {
     for(Iterator<Block> p=blk.get(j).iterator(); p.hasNext(); ) {
       Block b = p.next();
+      b.state = B_INVALID;
+      b.visited = false;
       if(b.w < blockCount.length) {
         blockCount[b.w]++;
       }
     }
   }
+  for(Iterator<Block> p=blk.get(0).iterator(); p.hasNext(); ) {
+    Block b = p.next();
+    b.dfs();
+  }
   for(int j=0; j<BLOCK_NUM[1]; j++) {
     for(Iterator<Block> p=blk.get(j).iterator(); p.hasNext(); ) {
       Block b = p.next();
-      b.state = (b.w < blockCount.length && blockCount[b.w] <= BLOCK_SET[b.w]) ?
-        B_VALID : B_INVALID;
       b.draw();
     }
   }
