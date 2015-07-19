@@ -178,7 +178,8 @@ void draw() {
   mi = getMi();
   mj = getMj();
   if(mi >= 0 && mi < BLOCK_NUM[0] &&
-     mj >= 0 && mj < BLOCK_NUM[1]) {
+     mj >= 0 && mj < BLOCK_NUM[1] &&
+     mi0 >= 0 && mi0 < BLOCK_NUM[0]) {
     if(mousePressed) {
       int i = mi < mi0 ? mi : mi0;
       int w = mi < mi0 ? mi0 - mi + 1 : mi - mi0 + 1;
@@ -251,17 +252,20 @@ void mouseReleased() {
   } else if(mi >= BLOCK_NUM[0]) {
     mi = BLOCK_NUM[0] - 1;
   }
-  int i = mi < mi0 ? mi : mi0;
-  int w = mi < mi0 ? mi0 - mi + 1 : mi - mi0 + 1;
-  for(int k=i; k<i+w; k++) {
-    Iterator<Block> p = blockUnderCursor(k, mj0);
-    if(p != null) {
-      p.remove();
+  if(mi0 >= 0 && mi0 < BLOCK_NUM[0] &&
+     mj0 >= 0 && mj0 < BLOCK_NUM[1]) {
+    int i = mi < mi0 ? mi : mi0;
+    int w = mi < mi0 ? mi0 - mi + 1 : mi - mi0 + 1;
+    for(int k=i; k<i+w; k++) {
+      Iterator<Block> p = blockUnderCursor(k, mj0);
+      if(p != null) {
+        p.remove();
+      }
     }
+    if(w != 1) {
+      blk.get(mj0).add(new Block(i, mj0, w, B_VALID));
+    }
+    cursor(ARROW);
   }
-  if(w != 1) {
-    blk.get(mj0).add(new Block(i, mj0, w, B_VALID));
-  }
-  cursor(ARROW);
 }
 
