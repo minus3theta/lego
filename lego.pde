@@ -53,9 +53,7 @@ class Block {
       return;
     }
     visited = true;
-    if(state == B_UNGROUND) {
-      state = B_VALID;
-    }
+    state = B_VALID;
     for(int k = j-1; k <= j+1; k += 2) {
       if(k < 0 || k >= BLOCK_NUM[1]) {
         continue;
@@ -137,19 +135,20 @@ void draw() {
   for(int j=0; j<BLOCK_NUM[1]; j++) {
     for(Iterator<Block> p=blk.get(j).iterator(); p.hasNext(); ) {
       Block b = p.next();
+      b.visited = false;
+      b.state = B_UNGROUND;
       if(b.w < blockCount.length) {
         blockCount[b.w]++;
       }
     }
   }
-  for(int j=0; j<BLOCK_NUM[1]; j++) {
-    for(Iterator<Block> p=blk.get(j).iterator(); p.hasNext(); ) {
-      Block b = p.next();
-      b.state = b.w < blockCount.length && blockCount[b.w] <= BLOCK_SET[b.w] ?
-        B_UNGROUND : B_INVALID;
-      b.visited = false;
-    }
-  }
+  // for(int j=0; j<BLOCK_NUM[1]; j++) {
+  //   for(Iterator<Block> p=blk.get(j).iterator(); p.hasNext(); ) {
+  //     Block b = p.next();
+  //     b.state = b.w < blockCount.length && blockCount[b.w] <= BLOCK_SET[b.w] ?
+  //       B_UNGROUND : B_INVALID;
+  //   }
+  // }
   for(Iterator<Block> p=blk.get(0).iterator(); p.hasNext(); ) {
     Block b = p.next();
     b.dfs();
@@ -157,6 +156,8 @@ void draw() {
   for(int j=0; j<BLOCK_NUM[1]; j++) {
     for(Iterator<Block> p=blk.get(j).iterator(); p.hasNext(); ) {
       Block b = p.next();
+      b.state = b.w < blockCount.length && blockCount[b.w] <= BLOCK_SET[b.w] ?
+        b.state : B_INVALID;
       b.draw();
     }
   }
@@ -200,7 +201,7 @@ void draw() {
             }
             for(Iterator<Block> p=blk.get(k).iterator(); p.hasNext(); ) {
               Block b = p.next();
-              if(i + w > b.i && i < b.i + b.w) {
+              if(b.visited && i + w > b.i && i < b.i + b.w) {
                 s = B_VALID_S;
                 break;
               }
