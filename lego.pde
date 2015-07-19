@@ -28,6 +28,7 @@ ArrayList<LinkedList<Block>> blk;
 final int BLOCK_SET[] = {0, 0, 6, 6, 4, 0, 4};
 final int BLOCK_SET_POS[] = {0, 0, 13, 10, 7, 0, 4};
 int blockCount[];
+final int CLEAR_BUTTON[] = {30, 0, 34, 2};
 
 int mi;
 int mj;
@@ -178,6 +179,14 @@ void draw() {
            getX(BLOCK_NUM[0] + 6), getY(BLOCK_SET_POS[i]-1) + 35);
     }
   }
+  fill(192);
+  noStroke();
+  rect(getX(CLEAR_BUTTON[0]), getY(CLEAR_BUTTON[3] - 1),
+       BLOCK_SIZE[0] * (CLEAR_BUTTON[2]-CLEAR_BUTTON[0]),
+       BLOCK_SIZE[1] * (CLEAR_BUTTON[3]-CLEAR_BUTTON[1]));
+  fill(0);
+  textAlign(CENTER);
+  text("clear", (getX(CLEAR_BUTTON[0]) + getX(CLEAR_BUTTON[2])) / 2, getY(CLEAR_BUTTON[1]) + 10);
 
   mi = getMi();
   mj = getMj();
@@ -247,21 +256,17 @@ void mousePressed() {
     if(p != null) {
       p.remove();
     }
-  // } else {
-  //   for(int i=0; i<BLOCK_NUM[1]; i++) {
-  //     blk.get(i).clear();
-  //   }
   }
 }
 
 void mouseReleased() {
-  if(mi < 0) {
-    mi = 0;
-  } else if(mi >= BLOCK_NUM[0]) {
-    mi = BLOCK_NUM[0] - 1;
-  }
   if(mi0 >= 0 && mi0 < BLOCK_NUM[0] &&
      mj0 >= 0 && mj0 < BLOCK_NUM[1]) {
+    if(mi < 0) {
+      mi = 0;
+    } else if(mi >= BLOCK_NUM[0]) {
+      mi = BLOCK_NUM[0] - 1;
+    }
     int i = mi < mi0 ? mi : mi0;
     int w = mi < mi0 ? mi0 - mi + 1 : mi - mi0 + 1;
     for(int k=i; k<i+w; k++) {
@@ -274,6 +279,13 @@ void mouseReleased() {
       blk.get(mj0).add(new Block(i, mj0, w, B_VALID));
     }
     cursor(ARROW);
+  } else if(mi >= CLEAR_BUTTON[0] && mi < CLEAR_BUTTON[2] &&
+            mi0 >= CLEAR_BUTTON[0] && mi0 < CLEAR_BUTTON[2] &&
+            mj >= CLEAR_BUTTON[1] && mj < CLEAR_BUTTON[3] &&
+            mj0 >= CLEAR_BUTTON[1] && mj0 < CLEAR_BUTTON[3]) {
+    for(int i=0; i<BLOCK_NUM[1]; i++) {
+      blk.get(i).clear();
+    }
   }
 }
 
