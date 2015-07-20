@@ -1,6 +1,5 @@
 import java.util.*;
 
-final int WINDOW_SIZE[] = {1000, 605};
 final color BG_COLOR = color(255, 255, 224);
 
 final int ORIGIN[] = {20, 515};
@@ -87,7 +86,7 @@ int getY(int j) {
 }
 
 void setup() {
-  size(WINDOW_SIZE[0], WINDOW_SIZE[1]);
+  size(1000, 605);
   mi0 = mj0 = -1;
   blk = new ArrayList<LinkedList<Block>>(BLOCK_NUM[1]);
   for(int i=0; i<BLOCK_NUM[1]; i++) {
